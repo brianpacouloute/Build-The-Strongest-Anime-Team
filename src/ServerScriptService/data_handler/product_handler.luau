@@ -46,7 +46,7 @@ local function check_purhcase_id_async(player, purchase_id, grand_product_functi
 
         -- Verify that the product has been saved to the profile
         local function is_purchase_saved()
-            local saved_cache = profile.LastSavedData.PurchaseIdCache
+            local saved_cache = profile.LastSavedData.purchase_id_cache
             if saved_cache ~= nil then
                 return table.find(saved_cache, purchase_id) ~= nil
             else
@@ -91,17 +91,17 @@ local function process_receipt(receipt_info)
         if profile then
 
             -- Additional check to ensure the product function exists
-            if product_functions[receipt_info.product_id] == nil then
-                warn(("[ProductHandler] Product purchase requested for player %s (ID: %d) with product ID %s, but no function found"):format(player.Name, player.UserId, receipt_info.product_id))
+            if product_functions[receipt_info.ProductId] == nil then
+                warn(("[ProductHandler] Product purchase requested for player %s (ID: %d) with product ID %s, but no function found"):format(player.Name, player.UserId, receipt_info.ProductId))
                 return Enum.ProductPurchaseDecision.NotProcessedYet
             end
 
             -- Grand product and return decision
             local product_purchase_decision = check_purhcase_id_async(
                 player,
-                receipt_info.purchase_id,
+                receipt_info.PurchaseId,
                 function()
-                    product_functions[receipt_info.product_id](receipt_info, player, profile)
+                    product_functions[receipt_info.ProductId](receipt_info, player, profile)
                 end)
             
             return product_purchase_decision
