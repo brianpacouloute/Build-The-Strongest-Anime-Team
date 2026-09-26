@@ -2095,7 +2095,7 @@ if IsStudio == true then
 			print(`[{script.Name}]: Roblox API services unavailable - data will not be saved`)
 		else
 			new_state = "Access"
-			print(`[{script.Name}]: Roblox API services available - data will be saved`)
+			--print(`[{script.Name}]: Roblox API services available - data will be saved`)
 		end
 
 		DataStoreState = new_state
