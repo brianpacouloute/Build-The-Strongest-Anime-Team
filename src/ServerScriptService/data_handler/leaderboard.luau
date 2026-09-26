@@ -7,6 +7,7 @@ local stores = {
     wins = dss:GetOrderedDataStore("leaderboard_wins"),
     gold = dss:GetOrderedDataStore("leaderboard_gold"),
     playtime = dss:GetOrderedDataStore("leaderboard_playtime"),
+    best_winstreak = dss:GetOrderedDataStore("leaderboard_best_winstreak"),
 }
 
 local leaderboard = {}
