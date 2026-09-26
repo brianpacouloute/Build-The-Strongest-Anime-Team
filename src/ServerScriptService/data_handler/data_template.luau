@@ -14,6 +14,11 @@ local data_template = {
     ["robux_donated"] = 0,
     ["owned_abilities"] = {},
     ["daily_deal_period"] = -1,
+    ["pity"] = {
+        ["Rare"] = 0,
+        ["Epic"] = 0,
+        ["Mythic"] = 0,
+    },
 }
 
 return data_template

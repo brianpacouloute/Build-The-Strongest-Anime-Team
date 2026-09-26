@@ -6,6 +6,7 @@ local Roact = require(rs.Packages.roact)
 local catalog = require(rs.ability_catalog)
 local network = require(rs:WaitForChild("network_client"))
 local ability_grid = require(script.Parent.ability_grid)
+local pity_bars = require(script.Parent.pity_bars)
 local roll_panel = require(script.Parent.roll_panel)
 
 local player = plrs.LocalPlayer
@@ -39,6 +40,7 @@ function App:init()
         deal_price = nil,
         one_price = nil,
         ten_price = nil,
+        pity = { rare = 0, epic = 0, mythic = 0 },
     })
 end
 
@@ -49,6 +51,7 @@ function App:didMount()
             owned = owned_set(data.owned),
             deal_available = data.deal_available,
             reset_at = data.reset_at,
+            pity = data.pity,
         })
     end)
 
@@ -289,7 +292,7 @@ function App:render()
                 Grid = Roact.createElement("Frame", {
                     BackgroundTransparency = 1,
                     Position = UDim2.fromOffset(0, 40),
-                    Size = UDim2.new(1, -300, 1, -40),
+                    Size = UDim2.new(1, -300, 1, -150),
                 }, {
                     Cards = Roact.createElement(ability_grid, {
                         last_id = (function()
@@ -300,6 +303,16 @@ function App:render()
                             return nil
                         end)(),
                         owned = self.state.owned,
+                    }),
+                }),
+                Pity = Roact.createElement("Frame", {
+                    AnchorPoint = Vector2.new(0, 1),
+                    BackgroundTransparency = 1,
+                    Position = UDim2.new(0, 0, 1, 0),
+                    Size = UDim2.new(1, -300, 0, 108),
+                }, {
+                    Bars = Roact.createElement(pity_bars, {
+                        pity = self.state.pity,
                     }),
                 }),
                 Rail = Roact.createElement("Frame", {

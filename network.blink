@@ -28,6 +28,11 @@ event shop_state {
         owned: string[],
         deal_available: boolean,
         reset_at: u32,
+        pity: struct {
+            rare: u8,
+            epic: u8,
+            mythic: u8,
+        },
     }
 }
 

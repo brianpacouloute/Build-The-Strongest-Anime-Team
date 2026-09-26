@@ -35,6 +35,45 @@ local function fail(message, gold)
     }
 end
 
+local pity_rarities = { "Rare", "Epic", "Mythic" }
+
+local function pity_data(profile)
+    local pity = profile.Data.pity
+    if not pity then
+        pity = { Rare = 0, Epic = 0, Mythic = 0 }
+        profile.Data.pity = pity
+    end
+    return pity
+end
+
+local function pity_state(profile)
+    local pity = pity_data(profile)
+    return {
+        rare = pity.Rare or 0,
+        epic = pity.Epic or 0,
+        mythic = pity.Mythic or 0,
+    }
+end
+
+local function apply_pity(profile, ability)
+    local pity = pity_data(profile)
+
+    for _, rarity in pity_rarities do
+        pity[rarity] = (pity[rarity] or 0) + 1
+        if pity[rarity] >= catalog.pity[rarity] then
+            ability = ability_rates.pick(rarity, true)
+            pity[rarity] = 0
+            return ability
+        end
+    end
+
+    if catalog.pity[ability.rarity] then
+        pity[ability.rarity] = 0
+    end
+
+    return ability
+end
+
 function ability_shop.current_period()
     local hour = sensitive_list.daily_deal_reset_hour or 0
     return math.floor((os.time() - hour * 3600) / 86400)
@@ -67,6 +106,7 @@ function ability_shop.sync(player)
         owned = owned_list(profile),
         deal_available = ability_shop.deal_available(profile),
         reset_at = ability_shop.reset_at(),
+        pity = pity_state(profile),
     })
 end
 
@@ -93,7 +133,7 @@ function ability_shop.roll(player, use_gold, count)
     local rolls = {}
 
     for _ = 1, count do
-        local ability = ability_rates.pick()
+        local ability = apply_pity(profile, ability_rates.pick())
         local is_dupe = profile.Data.owned_abilities[ability.id] == true
         local refund = 0
 

@@ -12,6 +12,11 @@ local ability_catalog = {
         Epic = 700,
         Mythic = 900,
     },
+    pity = {
+        Rare = 10,
+        Epic = 15,
+        Mythic = 35,
+    },
     rarities = {
         Common = { weight = 50, color = Color3.fromRGB(140, 140, 140) },
         Uncommon = { weight = 28, color = Color3.fromRGB(80, 170, 90) },
