@@ -1,5 +1,7 @@
 local dss = game:GetService("DataStoreService")
 local plrs = game:GetService("Players")
+local rs = game:GetService("ReplicatedStorage")
+local helpers = require(rs.helpers)
 
 local stores = {
     wins = dss:GetOrderedDataStore("leaderboard_wins"),
@@ -52,7 +54,12 @@ function leaderboard.get_top(stat, count)
             end
         end
 
-        table.insert(lines, i .. ". " .. name .. " — " .. tostring(entry.value))
+        local value = entry.value
+        if stat == "playtime" then
+            value = helpers.format_time(value)
+        end
+
+        table.insert(lines, i .. ". " .. name .. " — " .. tostring(value))
     end
 
     if #lines == 0 then
