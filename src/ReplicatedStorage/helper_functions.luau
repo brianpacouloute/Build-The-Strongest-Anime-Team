@@ -1,4 +1,0 @@
-local helper = {}
-
-
-return helper
