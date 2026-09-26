@@ -5,6 +5,7 @@ local rs = game:GetService("ReplicatedStorage")
 local Roact = require(rs.Packages.roact)
 local catalog = require(rs.ability_catalog)
 local network = require(rs:WaitForChild("network_client"))
+local ability_detail = require(script.Parent.ability_detail)
 local ability_grid = require(script.Parent.ability_grid)
 local pity_bars = require(script.Parent.pity_bars)
 local roll_panel = require(script.Parent.roll_panel)
@@ -41,6 +42,8 @@ function App:init()
         one_price = nil,
         ten_price = nil,
         pity = { rare = 0, epic = 0, mythic = 0 },
+        equipped = {},
+        selected_id = nil,
     })
 end
 
@@ -49,6 +52,7 @@ function App:didMount()
         self:setState({
             gold = data.gold,
             owned = owned_set(data.owned),
+            equipped = owned_set(data.equipped),
             deal_available = data.deal_available,
             reset_at = data.reset_at,
             pity = data.pity,
@@ -56,10 +60,15 @@ function App:didMount()
     end)
 
     self.unsub_roll = network.roll_result.On(function(data)
+        local selected_id = self.state.selected_id
+        if data.ok and data.rolls and #data.rolls > 0 then
+            selected_id = data.rolls[#data.rolls].id
+        end
         self:setState({
             last_roll = data,
             gold = data.gold,
             rolling = false,
+            selected_id = selected_id,
         })
     end)
 
@@ -148,11 +157,16 @@ function App:gold_roll()
                 end
             end
         end
+        local selected_id = self.state.selected_id
+        if result.ok and result.rolls and #result.rolls > 0 then
+            selected_id = result.rolls[#result.rolls].id
+        end
         self:setState({
             last_roll = result,
             gold = result.gold,
             owned = owned,
             rolling = false,
+            selected_id = selected_id,
         })
     else
         self:setState({
@@ -177,6 +191,13 @@ end
 
 function App:ten_roll()
     network.product_purchase.Fire(catalog.products.robux_10x)
+end
+
+function App:set_equipped(id, equipped)
+    network.set_equipped.Fire({
+        id = id,
+        equipped = equipped,
+    })
 end
 
 function App:render()
@@ -292,7 +313,7 @@ function App:render()
                 Grid = Roact.createElement("Frame", {
                     BackgroundTransparency = 1,
                     Position = UDim2.fromOffset(0, 40),
-                    Size = UDim2.new(1, -300, 1, -150),
+                    Size = UDim2.new(1, -300, 1, -370),
                 }, {
                     Cards = Roact.createElement(ability_grid, {
                         last_id = (function()
@@ -302,7 +323,27 @@ function App:render()
                             end
                             return nil
                         end)(),
+                        equipped = self.state.equipped,
+                        on_select = function(id)
+                            self:setState({ selected_id = id })
+                        end,
                         owned = self.state.owned,
+                        selected_id = self.state.selected_id,
+                    }),
+                }),
+                Detail = Roact.createElement("Frame", {
+                    AnchorPoint = Vector2.new(0, 1),
+                    BackgroundTransparency = 1,
+                    Position = UDim2.new(0, 0, 1, -116),
+                    Size = UDim2.new(1, -300, 0, 168),
+                }, {
+                    Panel = Roact.createElement(ability_detail, {
+                        ability = catalog.get(self.state.selected_id),
+                        equipped = self.state.equipped[self.state.selected_id] == true,
+                        on_toggle = function(id, equipped)
+                            self:set_equipped(id, equipped)
+                        end,
+                        owned = self.state.owned[self.state.selected_id] == true,
                     }),
                 }),
                 Pity = Roact.createElement("Frame", {

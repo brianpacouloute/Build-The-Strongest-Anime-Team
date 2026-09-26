@@ -5,23 +5,41 @@ local catalog = require(rs.ability_catalog)
 local function ability_card(props)
     local ability = props.ability
     local owned = props.owned
+    local equipped = props.equipped
     local highlighted = props.highlighted
+    local selected = props.selected
     local rarity = catalog.rarities[ability.rarity]
     local color = rarity and rarity.color or Color3.fromRGB(120, 120, 120)
     local percent = string.format("%.1f%%", catalog.drop_percent(ability))
 
-    return Roact.createElement("Frame", {
+    local stroke = Color3.fromRGB(220, 214, 204)
+    local thickness = 1
+    if selected then
+        stroke = Color3.fromRGB(40, 40, 40)
+        thickness = 2
+    elseif highlighted then
+        stroke = Color3.fromRGB(232, 185, 35)
+        thickness = 3
+    end
+
+    return Roact.createElement("TextButton", {
+        AutoButtonColor = true,
         BackgroundColor3 = Color3.fromRGB(255, 255, 255),
         BorderSizePixel = 0,
+        Font = Enum.Font.Gotham,
         LayoutOrder = props.LayoutOrder,
         Size = UDim2.fromOffset(148, 172),
+        Text = "",
+        [Roact.Event.Activated] = function()
+            props.on_select(ability.id)
+        end,
     }, {
         Corner = Roact.createElement("UICorner", {
             CornerRadius = UDim.new(0, 10),
         }),
         Stroke = Roact.createElement("UIStroke", {
-            Color = if highlighted then Color3.fromRGB(232, 185, 35) else Color3.fromRGB(220, 214, 204),
-            Thickness = if highlighted then 3 else 1,
+            Color = stroke,
+            Thickness = thickness,
         }),
         Icon = Roact.createElement("Frame", {
             AnchorPoint = Vector2.new(0.5, 0),
@@ -67,8 +85,8 @@ local function ability_card(props)
             Font = Enum.Font.Gotham,
             Position = UDim2.fromOffset(8, 138),
             Size = UDim2.new(1, -16, 0, 22),
-            Text = if owned then "Owned" else "Not owned",
-            TextColor3 = if owned then Color3.fromRGB(70, 150, 80) else Color3.fromRGB(150, 150, 150),
+            Text = if equipped then "Active" elseif owned then "Owned" else "Not owned",
+            TextColor3 = if equipped then Color3.fromRGB(0, 170, 140) elseif owned then Color3.fromRGB(70, 150, 80) else Color3.fromRGB(150, 150, 150),
             TextSize = 13,
         }),
     })
@@ -94,9 +112,12 @@ local function ability_grid(props)
     for index, ability in catalog.abilities do
         cards[ability.id] = Roact.createElement(ability_card, {
             ability = ability,
+            equipped = props.equipped[ability.id] == true,
             highlighted = props.last_id == ability.id,
             LayoutOrder = index,
+            on_select = props.on_select,
             owned = props.owned[ability.id] == true,
+            selected = props.selected_id == ability.id,
         })
     end
 

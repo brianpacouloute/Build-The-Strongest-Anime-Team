@@ -13,6 +13,7 @@ local data_template = {
     ["robux_spent"] = 0,
     ["robux_donated"] = 0,
     ["owned_abilities"] = {},
+    ["equipped_abilities"] = {},
     ["daily_deal_period"] = -1,
     ["pity"] = {
         ["Rare"] = 0,

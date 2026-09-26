@@ -19,6 +19,41 @@ local function owned_list(profile)
     return owned
 end
 
+local function equipped_map(profile)
+    local equipped = profile.Data.equipped_abilities
+    if not equipped then
+        equipped = {}
+        profile.Data.equipped_abilities = equipped
+    end
+    return equipped
+end
+
+local function equipped_list(profile)
+    local map = equipped_map(profile)
+    local equipped = {}
+    local max_active = catalog.max_active or 1
+    for id, value in map do
+        if value then
+            if #equipped < max_active then
+                table.insert(equipped, tostring(id))
+            else
+                map[id] = nil
+            end
+        end
+    end
+    return equipped
+end
+
+local function equipped_count(profile)
+    local count = 0
+    for _, value in equipped_map(profile) do
+        if value then
+            count += 1
+        end
+    end
+    return count
+end
+
 local function set_gold(player, profile)
     local gold_stat = player:FindFirstChild("leaderstats") and player.leaderstats:FindFirstChild("Gold")
     if gold_stat then
@@ -104,10 +139,36 @@ function ability_shop.sync(player)
     network.shop_state.Fire(player, {
         gold = profile.Data.gold,
         owned = owned_list(profile),
+        equipped = equipped_list(profile),
         deal_available = ability_shop.deal_available(profile),
         reset_at = ability_shop.reset_at(),
         pity = pity_state(profile),
     })
+end
+
+function ability_shop.set_equipped(player, id, equipped)
+    local profile = data_handler.profiles[player.UserId]
+    if not profile then
+        return
+    end
+
+    if not catalog.get(id) then
+        return
+    end
+
+    if profile.Data.owned_abilities[id] ~= true then
+        return
+    end
+
+    local map = equipped_map(profile)
+    if equipped then
+        table.clear(map)
+        map[id] = true
+    else
+        map[id] = nil
+    end
+
+    ability_shop.sync(player)
 end
 
 function ability_shop.roll(player, use_gold, count)
@@ -144,6 +205,9 @@ function ability_shop.roll(player, use_gold, count)
         else
             profile.Data.owned_abilities[ability.id] = true
             new_count += 1
+            if equipped_count(profile) < (catalog.max_active or 1) then
+                equipped_map(profile)[ability.id] = true
+            end
         end
 
         table.insert(rolls, {
@@ -181,6 +245,10 @@ end
 
 network.roll_ability.On(function(player)
     return ability_shop.roll(player, true, 1)
+end)
+
+network.set_equipped.On(function(player, data)
+    ability_shop.set_equipped(player, data.id, data.equipped)
 end)
 
 return ability_shop

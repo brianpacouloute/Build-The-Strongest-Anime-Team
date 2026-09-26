@@ -26,6 +26,7 @@ event shop_state {
     data: struct {
         gold: u32,
         owned: string[],
+        equipped: string[],
         deal_available: boolean,
         reset_at: u32,
         pity: struct {
@@ -54,4 +55,14 @@ event product_purchase {
     type: Reliable,
     call: SingleSync,
     data: u32
+}
+
+event set_equipped {
+    from: Client,
+    type: Reliable,
+    call: SingleSync,
+    data: struct {
+        id: string,
+        equipped: boolean,
+    }
 }
