@@ -3,6 +3,7 @@ local plrs = game:GetService("Players")
 local mps = game:GetService("MarketplaceService")
 
 local sensitive_list = require(sss.sensitive_list)
+local network = require(sss:WaitForChild("network_server"))
 
 local data_handler = require(sss.data_handler)
 local product_functions = require(sss.data_handler.product_functions)
@@ -119,6 +120,6 @@ end
 -- Connects process_receipt callback to MarketplaceService
 mps.ProcessReceipt = process_receipt
 
--- Events below are used to handle the product purchase requests (call product_purchase_requested in event listeners)
+network.product_purchase.On(product_purchase_requested)
 
 return {}
