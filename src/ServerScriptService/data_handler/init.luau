@@ -9,6 +9,7 @@ local sensitive_list = require(sss.sensitive_list)
 local profile_store = require(script.profile_store)
 
 local data_template = require(sss.data_handler.data_template)
+local leaderboard = require(script.leaderboard)
 
 local data_key = sensitive_list.data_key
 local player_store = profile_store.New(data_key, data_template)
@@ -68,6 +69,9 @@ local function init_data(player)
 
     start_playtime_session(profile)
     setup_leaderstats(player, profile)
+    leaderboard.update("wins", player.UserId, profile.Data.wins)
+    leaderboard.update("gold", player.UserId, profile.Data.gold)
+    leaderboard.update("playtime", player.UserId, profile.Data.playtime_info.playtime)
 end
 
 local function cleanup_data(player)
