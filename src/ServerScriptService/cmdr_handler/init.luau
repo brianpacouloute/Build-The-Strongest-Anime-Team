@@ -6,12 +6,12 @@ local sensitive_list = require(sss:WaitForChild("sensitive_list"))
 local cmdr_handler = {}
 
 local command_folder = script.commands
-local types_folder = script.types
+--local types_folder = script.types
 
 cmdr.Registry:RegisterCommandsIn(command_folder, function(cmd)
     return cmd.Name ~= 'template'
 end)
-cmdr.Registry:RegisterTypesIn(types_folder)
+--cmdr.Registry:RegisterTypesIn(types_folder)
 cmdr.Registry:RegisterHook("BeforeRun", function(context) end)
 
 function cmdr_handler.permission_check(player)
