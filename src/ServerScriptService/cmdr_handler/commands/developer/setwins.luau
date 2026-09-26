@@ -1,18 +1,18 @@
 return {
-    Name = "setgold",
+    Name = "setwins",
     Aliases = {},
-    Description = "Set a player's gold",
-    Group = "Admin",
+    Description = "Set a player's wins",
+    Group = "Developer",
     Args = {
         {
             Type = "number",
             Name = "amount",
-            Description = "Gold to set",
+            Description = "Wins to set",
         },
         {
             Type = "player",
             Name = "player",
-            Description = "Who to set gold for",
+            Description = "Who to set wins for",
             Optional = true,
         },
     },

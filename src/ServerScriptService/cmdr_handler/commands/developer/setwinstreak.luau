@@ -2,7 +2,7 @@ return {
     Name = "setwinstreak",
     Aliases = {},
     Description = "Set a player's winstreak",
-    Group = "Admin",
+    Group = "Developer",
     Args = {
         {
             Type = "number",

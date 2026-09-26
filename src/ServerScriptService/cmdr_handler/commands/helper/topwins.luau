@@ -2,7 +2,7 @@ return {
     Name = "topwins",
     Aliases = {},
     Description = "Show the top wins leaderboard",
-    Group = "Admin",
+    Group = "Helper",
     Args = {
         {
             Type = "number",

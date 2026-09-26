@@ -1,8 +1,8 @@
 return {
-    Name = "topplaytime",
-    Aliases = {},
-    Description = "Show the top playtime leaderboard",
-    Group = "Admin",
+    Name = "tophighestwinstreak",
+    Aliases = { },
+    Description = "Show the top highest winstreak leaderboard",
+    Group = "Helper",
     Args = {
         {
             Type = "number",
