@@ -36,6 +36,30 @@ local function end_playtime_session(profile)
     info.last_played = now
 end
 
+local function setup_leaderstats(player, profile)
+    if player:FindFirstChild("leaderstats") then return end
+
+    local folder = Instance.new("Folder")
+    folder.Name = "leaderstats"
+
+    local gold = Instance.new("IntValue")
+    gold.Name = "Gold"
+    gold.Value = profile.Data.gold
+    gold.Parent = folder
+
+    local wins = Instance.new("IntValue")
+    wins.Name = "Wins"
+    wins.Value = profile.Data.wins
+    wins.Parent = folder
+
+    local winstreak = Instance.new("IntValue")
+    winstreak.Name = "Winstreak"
+    winstreak.Value = profile.Data.winstreak
+    winstreak.Parent = folder
+
+    folder.Parent = player
+end
+
 local function init_data(player)
     local profile = data_handler.profiles[player.UserId]
     if not profile then
@@ -43,6 +67,7 @@ local function init_data(player)
     end
 
     start_playtime_session(profile)
+    setup_leaderstats(player, profile)
 end
 
 local function cleanup_data(player)
