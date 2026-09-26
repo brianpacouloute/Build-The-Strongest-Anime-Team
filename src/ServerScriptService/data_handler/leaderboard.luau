@@ -3,6 +3,8 @@ local plrs = game:GetService("Players")
 
 local stores = {
     wins = dss:GetOrderedDataStore("leaderboard_wins"),
+    gold = dss:GetOrderedDataStore("leaderboard_gold"),
+    playtime = dss:GetOrderedDataStore("leaderboard_playtime"),
 }
 
 local leaderboard = {}

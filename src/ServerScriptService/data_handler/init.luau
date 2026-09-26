@@ -70,6 +70,8 @@ local function init_data(player)
     start_playtime_session(profile)
     setup_leaderstats(player, profile)
     leaderboard.update("wins", player.UserId, profile.Data.wins)
+    leaderboard.update("gold", player.UserId, profile.Data.gold)
+    leaderboard.update("playtime", player.UserId, profile.Data.playtime_info.playtime)
 end
 
 local function cleanup_data(player)
