@@ -1,8 +1,68 @@
 option ClientOutput = "src/ReplicatedStorage/network_client.luau"
 option ServerOutput = "src/ServerScriptService/network_server.luau"
 
+struct roll_result {
+    ok: boolean,
+    message: string,
+    gold: u32,
+    rolls: struct {
+        id: string,
+        rarity: string,
+        is_dupe: boolean,
+        refund: u16,
+    }[],
+}
+
 event permission {
     from: Server,
     type: Reliable,
     call: SingleSync
+}
+
+event shop_state {
+    from: Server,
+    type: Reliable,
+    call: SingleSync,
+    data: struct {
+        gold: u32,
+        owned: string[],
+        equipped: string[],
+        deal_available: boolean,
+        reset_at: u32,
+        pity: struct {
+            rare: u8,
+            epic: u8,
+            mythic: u8,
+        },
+    }
+}
+
+event roll_result {
+    from: Server,
+    type: Reliable,
+    call: SingleSync,
+    data: roll_result
+}
+
+function roll_ability {
+    Yield: Coroutine,
+    Data: u8,
+    Return: roll_result
+}
+
+event product_purchase {
+    from: Client,
+    type: Reliable,
+    call: SingleSync,
+    data: u32
+}
+
+event set_equipped {
+    from: Client,
+    type: Reliable,
+    call: SingleSync,
+    data: struct {
+        id: string,
+        equipped: boolean,
+    }
 }

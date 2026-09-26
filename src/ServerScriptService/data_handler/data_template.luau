@@ -12,6 +12,14 @@ local data_template = {
     ["best_winstreak"] = 0,
     ["robux_spent"] = 0,
     ["robux_donated"] = 0,
+    ["owned_abilities"] = {},
+    ["equipped_abilities"] = {},
+    ["daily_deal_period"] = -1,
+    ["pity"] = {
+        ["Rare"] = 0,
+        ["Epic"] = 0,
+        ["Mythic"] = 0,
+    },
 }
 
 return data_template
