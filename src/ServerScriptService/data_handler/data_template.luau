@@ -6,6 +6,12 @@ local data_template = {
         ["session_start"] = 0,
         ["playtime"] = 0,
     },
+    ["gold"] = 0,
+    ["wins"] = 0,
+    ["winstreak"] = 0,
+    ["best_winstreak"] = 0,
+    ["robux_spent"] = 0,
+    ["robux_donated"] = 0,
 }
 
 return data_template
