@@ -3,9 +3,19 @@
 registry = "test"
 
 [[package]]
+name = "b1ntran/profilestore"
+version = "1.0.4"
+dependencies = []
+
+[[package]]
 name = "brian/build-the-strongest-anime-team"
 version = "0.1.0"
-dependencies = [["roact", "roblox/roact@1.4.4"]]
+dependencies = [["cmdr", "evaera/cmdr@1.13.0"], ["profilestore", "b1ntran/profilestore@1.0.4"], ["roact", "roblox/roact@1.4.4"]]
+
+[[package]]
+name = "evaera/cmdr"
+version = "1.13.0"
+dependencies = []
 
 [[package]]
 name = "roblox/roact"
