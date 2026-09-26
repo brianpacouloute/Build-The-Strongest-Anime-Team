@@ -1,0 +1,10 @@
+local rs = game:GetService("ReplicatedStorage")
+local cmdr = (require :: any)(rs:WaitForChild("CmdrClient"))
+local network = require(rs:WaitForChild("network_client"))
+
+cmdr:SetEnabled(false)
+cmdr.Registry:RegisterHook("BeforeRun", function(context) end)
+network.permission.On(function()
+    cmdr:SetEnabled(true)
+    cmdr:SetActivationKeys({Enum.KeyCode.Equals})
+end)

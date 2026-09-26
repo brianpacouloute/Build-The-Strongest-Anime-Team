@@ -6,5 +6,7 @@ realm = "shared"
 
 [dependencies]
 roact = "roblox/roact@1.4.4"
+
+[server-dependencies]
 cmdr = "evaera/cmdr@1.13.0"
 ui-labs = "pepeeltoro41/ui-labs@2.4.2"

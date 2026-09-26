@@ -1,0 +1,8 @@
+option ClientOutput = "src/ReplicatedStorage/network_client.luau"
+option ServerOutput = "src/ServerScriptService/network_server.luau"
+
+event permission {
+    from: Server,
+    type: Reliable,
+    call: SingleSync
+}

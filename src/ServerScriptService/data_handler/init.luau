@@ -9,6 +9,7 @@ local sensitive_list = require(sss.sensitive_list)
 local profile_store = require(script.profile_store)
 
 local data_template = require(sss.data_handler.data_template)
+local leaderboard = require(script.leaderboard)
 
 local data_key = sensitive_list.data_key
 local player_store = profile_store.New(data_key, data_template)
@@ -57,6 +58,11 @@ local function setup_leaderstats(player, profile)
     winstreak.Value = profile.Data.winstreak
     winstreak.Parent = folder
 
+    local highest_winstreak = Instance.new("IntValue")
+    highest_winstreak.Name = "HighestWinstreak"
+    highest_winstreak.Value = profile.Data.best_winstreak
+    highest_winstreak.Parent = folder
+
     folder.Parent = player
 end
 
@@ -68,6 +74,10 @@ local function init_data(player)
 
     start_playtime_session(profile)
     setup_leaderstats(player, profile)
+    leaderboard.update("wins", player.UserId, profile.Data.wins)
+    leaderboard.update("gold", player.UserId, profile.Data.gold)
+    leaderboard.update("playtime", player.UserId, profile.Data.playtime_info.playtime)
+    leaderboard.update("best_winstreak", player.UserId, profile.Data.best_winstreak)
 end
 
 local function cleanup_data(player)
@@ -116,6 +126,60 @@ function data_handler.load_profile(player)
 		player:Kick('A data error occured. Please rejoin.')
         warn(("[DataHandler] Player %s (ID: %d) is not in the player service. Ending session"):format(player.Name, player.UserId))
 	end
+end
+
+function data_handler.set(player, stat, amount)
+    local profile = data_handler.profiles[player.UserId]
+    if not profile then
+        return nil, "No profile for " .. player.Name
+    end
+
+    amount = math.max(0, math.floor(tonumber(amount) or 0))
+
+    if stat == "gold" then
+        profile.Data.gold = amount
+        local gold_stat = player:FindFirstChild("leaderstats") and player.leaderstats:FindFirstChild("Gold")
+        if gold_stat then
+            gold_stat.Value = profile.Data.gold
+        end
+        leaderboard.update("gold", player.UserId, profile.Data.gold)
+        return profile.Data.gold
+    elseif stat == "wins" then
+        profile.Data.wins = amount
+        local wins_stat = player:FindFirstChild("leaderstats") and player.leaderstats:FindFirstChild("Wins")
+        if wins_stat then
+            wins_stat.Value = profile.Data.wins
+        end
+        leaderboard.update("wins", player.UserId, profile.Data.wins)
+        return profile.Data.wins
+    elseif stat == "winstreak" then
+        profile.Data.winstreak = amount
+        local winstreak_stat = player:FindFirstChild("leaderstats") and player.leaderstats:FindFirstChild("Winstreak")
+        if winstreak_stat then
+            winstreak_stat.Value = profile.Data.winstreak
+        end
+
+        if profile.Data.winstreak > profile.Data.best_winstreak then
+            profile.Data.best_winstreak = profile.Data.winstreak
+            local highest_stat = player:FindFirstChild("leaderstats") and player.leaderstats:FindFirstChild("HighestWinstreak")
+            if highest_stat then
+                highest_stat.Value = profile.Data.best_winstreak
+            end
+            leaderboard.update("best_winstreak", player.UserId, profile.Data.best_winstreak)
+        end
+
+        return profile.Data.winstreak
+    elseif stat == "best_winstreak" then
+        profile.Data.best_winstreak = math.max(amount, profile.Data.winstreak)
+        local highest_stat = player:FindFirstChild("leaderstats") and player.leaderstats:FindFirstChild("HighestWinstreak")
+        if highest_stat then
+            highest_stat.Value = profile.Data.best_winstreak
+        end
+        leaderboard.update("best_winstreak", player.UserId, profile.Data.best_winstreak)
+        return profile.Data.best_winstreak
+    end
+
+    return nil, "Unknown stat: " .. tostring(stat)
 end
 
 function data_handler.unload_profile(player)
