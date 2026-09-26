@@ -1,7 +1,16 @@
 local sss = game:GetService("ServerScriptService")
 local data_handler = require(sss.data_handler)
+local sensitive_list = require(sss.sensitive_list)
 
-return function(context, player, amount)
+return function(context, amount, player)
+    if table.find(sensitive_list.developers, context.Executor.UserId) == nil then
+        return "You don't have permission to run this command."
+    end
+
+    if player == nil then
+        player = context.Executor
+    end
+
     local new_value, err = data_handler.set(player, "wins", amount)
     if err then
         return err

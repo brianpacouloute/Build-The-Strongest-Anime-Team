@@ -5,14 +5,15 @@ return {
     Group = "Admin",
     Args = {
         {
-            Type = "player",
-            Name = "player",
-            Description = "Who to set winstreak for",
-        },
-        {
             Type = "number",
             Name = "amount",
             Description = "Winstreak to set",
+        },
+        {
+            Type = "player",
+            Name = "player",
+            Description = "Who to set winstreak for",
+            Optional = true,
         },
     },
 }
