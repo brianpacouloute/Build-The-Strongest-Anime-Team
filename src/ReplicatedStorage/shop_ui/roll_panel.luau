@@ -1,159 +1,173 @@
 local rs = game:GetService("ReplicatedStorage")
 local Roact = require(rs.Packages.roact)
 local helpers = require(rs.helpers)
+local pity_bars = require(script.Parent.pity_bars)
 
-local MINT = Color3.fromRGB(0, 220, 170)
-local GOLD_BG = Color3.fromRGB(255, 248, 230)
-local GOLD_TEXT = Color3.fromRGB(200, 150, 20)
+local MINT = Color3.fromRGB(135, 232, 187)
+local PANEL = Color3.fromRGB(233, 229, 218)
 
 local function mint_button(props)
     return Roact.createElement("TextButton", {
         AutoButtonColor = true,
         BackgroundColor3 = MINT,
+        BackgroundTransparency = 0.3,
         BorderSizePixel = 0,
-        Font = Enum.Font.GothamBold,
-        LayoutOrder = props.LayoutOrder,
-        Size = UDim2.new(1, 0, 0, 48),
-        Text = props.text,
-        TextColor3 = Color3.fromRGB(20, 20, 20),
-        TextSize = 18,
+        Position = props.Position,
+        Size = UDim2.new(1, 0, 0, 42),
+        Text = "",
         [Roact.Event.Activated] = props.on_click,
     }, {
-        Corner = Roact.createElement("UICorner", {
-            CornerRadius = UDim.new(0, 8),
+        Wash = Roact.createElement("UIGradient", {
+            Rotation = 0,
+            Transparency = NumberSequence.new({
+                NumberSequenceKeypoint.new(0, 0.45),
+                NumberSequenceKeypoint.new(0.5, 0),
+                NumberSequenceKeypoint.new(1, 0.45),
+            }),
+        }),
+        Content = Roact.createElement("Frame", {
+            AnchorPoint = Vector2.new(0.5, 0.5),
+            AutomaticSize = Enum.AutomaticSize.X,
+            BackgroundTransparency = 1,
+            Position = UDim2.fromScale(0.5, 0.5),
+            Size = UDim2.fromOffset(0, 26),
+        }, {
+            List = Roact.createElement("UIListLayout", {
+                FillDirection = Enum.FillDirection.Horizontal,
+                VerticalAlignment = Enum.VerticalAlignment.Center,
+                SortOrder = Enum.SortOrder.LayoutOrder,
+                Padding = UDim.new(0, 8),
+            }),
+            Price = Roact.createElement("TextLabel", {
+                AutomaticSize = Enum.AutomaticSize.X,
+                BackgroundTransparency = 1,
+                FontFace = Font.new(Font.fromEnum(Enum.Font.RobotoCondensed).Family, Enum.FontWeight.Bold),
+                LayoutOrder = 1,
+                Size = UDim2.fromOffset(0, 26),
+                Text = props.price and ("R$ " .. tostring(props.price)) or "",
+                TextColor3 = Color3.fromRGB(24, 27, 24),
+                TextSize = 22,
+            }),
+            Badge = Roact.createElement("TextLabel", {
+                BackgroundColor3 = Color3.fromRGB(28, 30, 26),
+                BorderSizePixel = 0,
+                FontFace = Font.new(Font.fromEnum(Enum.Font.RobotoCondensed).Family, Enum.FontWeight.Bold),
+                LayoutOrder = 2,
+                Size = UDim2.fromOffset(42, 26),
+                Text = props.badge,
+                TextColor3 = Color3.fromRGB(251, 247, 235),
+                TextSize = 17,
+            }),
         }),
     })
 end
 
 local function roll_panel(props)
-    local last = props.last_roll
-    local result_text = "Roll to unlock an ability"
-    if last then
-        result_text = last.message
-    end
-
     local remaining = math.max(0, (props.reset_at or 0) - (props.now or os.time()))
-    local reset_text = "Resets in " .. helpers.format_time(remaining)
-
-    local one_label = "Deal"
-    if props.deal_available then
-        if props.deal_price then
-            one_label = "R$ " .. tostring(props.deal_price) .. "  ·  Deal"
-        end
-    else
-        one_label = "1x"
-        if props.one_price then
-            one_label = "R$ " .. tostring(props.one_price) .. "  ·  1x"
-        end
-    end
-
-    local ten_label = "10x"
-    if props.ten_price then
-        ten_label = "R$ " .. tostring(props.ten_price) .. "  ·  10x"
-    end
-
-    local gold_label = "1,000 Gold"
-    if props.rolling then
-        gold_label = "Rolling..."
-    end
-
     return Roact.createElement("Frame", {
-        BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-        BorderSizePixel = 0,
+        BackgroundTransparency = 1,
         Size = UDim2.fromScale(1, 1),
     }, {
-        Corner = Roact.createElement("UICorner", {
-            CornerRadius = UDim.new(0, 12),
-        }),
-        Padding = Roact.createElement("UIPadding", {
-            PaddingBottom = UDim.new(0, 20),
-            PaddingLeft = UDim.new(0, 18),
-            PaddingRight = UDim.new(0, 18),
-            PaddingTop = UDim.new(0, 20),
-        }),
-        List = Roact.createElement("UIListLayout", {
-            FillDirection = Enum.FillDirection.Vertical,
-            HorizontalAlignment = Enum.HorizontalAlignment.Center,
-            Padding = UDim.new(0, 10),
-            SortOrder = Enum.SortOrder.LayoutOrder,
-        }),
-        Title = Roact.createElement("TextLabel", {
-            BackgroundTransparency = 1,
-            Font = Enum.Font.GothamBold,
-            LayoutOrder = 1,
-            Size = UDim2.new(1, 0, 0, 26),
-            Text = "Roll an Ability",
-            TextColor3 = Color3.fromRGB(35, 35, 35),
-            TextSize = 20,
-            TextXAlignment = Enum.TextXAlignment.Left,
-        }),
-        DealLine = Roact.createElement("Frame", {
-            BackgroundTransparency = 1,
-            LayoutOrder = 2,
-            Size = UDim2.new(1, 0, 0, 20),
+        Purchase = Roact.createElement("Frame", {
+            BackgroundColor3 = PANEL,
+            BackgroundTransparency = 0.72,
+            BorderSizePixel = 0,
+            Size = UDim2.new(1, 0, 0, 218),
         }, {
-            Left = Roact.createElement("TextLabel", {
+            Padding = Roact.createElement("UIPadding", {
+                PaddingLeft = UDim.new(0, 10),
+                PaddingRight = UDim.new(0, 10),
+                PaddingTop = UDim.new(0, 10),
+            }),
+            Title = Roact.createElement("TextLabel", {
                 BackgroundTransparency = 1,
-                Font = Enum.Font.Gotham,
-                Size = UDim2.new(0.55, 0, 1, 0),
-                Text = "Daily Deal · 50% off",
-                TextColor3 = Color3.fromRGB(120, 120, 120),
-                TextSize = 13,
+                Font = Enum.Font.RobotoCondensed,
+                Size = UDim2.new(1, 0, 0, 22),
+                Text = "Roll an Item",
+                TextColor3 = Color3.fromRGB(126, 122, 112),
+                TextSize = 19,
                 TextXAlignment = Enum.TextXAlignment.Left,
             }),
-            Right = Roact.createElement("TextLabel", {
+            Deal = Roact.createElement("TextLabel", {
                 BackgroundTransparency = 1,
-                Font = Enum.Font.Gotham,
-                Position = UDim2.fromScale(0.45, 0),
-                Size = UDim2.new(0.55, 0, 1, 0),
-                Text = reset_text,
-                TextColor3 = Color3.fromRGB(120, 120, 120),
-                TextSize = 13,
+                Font = Enum.Font.RobotoCondensed,
+                Position = UDim2.fromOffset(0, 24),
+                Size = UDim2.new(0.5, 0, 0, 18),
+                Text = "Daily Deal · 50% off",
+                TextColor3 = Color3.fromRGB(117, 114, 105),
+                TextSize = 12,
+                TextXAlignment = Enum.TextXAlignment.Left,
+            }),
+            Reset = Roact.createElement("TextLabel", {
+                BackgroundTransparency = 1,
+                Font = Enum.Font.RobotoCondensed,
+                Position = UDim2.new(0.5, 0, 0, 24),
+                Size = UDim2.new(0.5, 0, 0, 18),
+                AnchorPoint = Vector2.new(0, 0),
+                Text = "Resets in " .. helpers.format_time(remaining),
+                TextColor3 = Color3.fromRGB(117, 114, 105),
+                TextSize = 12,
                 TextXAlignment = Enum.TextXAlignment.Right,
             }),
+            One = Roact.createElement(mint_button, {
+                Position = UDim2.fromOffset(0, 48),
+                price = if props.deal_available then props.deal_price else props.one_price,
+                badge = if props.deal_available then "Deal" else "1x",
+                on_click = props.on_one_roll,
+            }),
+            Ten = Roact.createElement(mint_button, {
+                Position = UDim2.fromOffset(0, 100),
+                price = props.ten_price,
+                badge = "10x",
+                on_click = props.on_ten_roll,
+            }),
+            Gold = Roact.createElement("TextButton", {
+                AutoButtonColor = not props.rolling,
+                BackgroundColor3 = Color3.fromRGB(252, 249, 238),
+                BackgroundTransparency = 0.45,
+                BorderSizePixel = 0,
+                FontFace = Font.new(Font.fromEnum(Enum.Font.RobotoCondensed).Family, Enum.FontWeight.Bold),
+                Position = UDim2.fromOffset(0, 152),
+                Size = UDim2.new(1, 0, 0, 42),
+                Text = if props.rolling then "Rolling..." else "1,000",
+                TextColor3 = Color3.fromRGB(211, 172, 63),
+                TextSize = 22,
+                [Roact.Event.Activated] = function()
+                    if not props.rolling then
+                        props.on_gold_roll()
+                    end
+                end,
+            }, {
+                Stroke = Roact.createElement("UIStroke", {
+                    ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+                    Color = Color3.fromRGB(232, 218, 170),
+                    Thickness = 1,
+                    Transparency = 0.65,
+                }),
+            }),
         }),
-        OneButton = Roact.createElement(mint_button, {
-            LayoutOrder = 3,
-            on_click = props.on_one_roll,
-            text = one_label,
-        }),
-        TenButton = Roact.createElement(mint_button, {
-            LayoutOrder = 4,
-            on_click = props.on_ten_roll,
-            text = ten_label,
-        }),
-        GoldButton = Roact.createElement("TextButton", {
-            AutoButtonColor = not props.rolling,
-            BackgroundColor3 = if props.rolling then Color3.fromRGB(220, 220, 220) else GOLD_BG,
+        Pity = Roact.createElement("Frame", {
+            BackgroundColor3 = PANEL,
+            BackgroundTransparency = 0.72,
             BorderSizePixel = 0,
-            Font = Enum.Font.GothamBold,
-            LayoutOrder = 5,
-            Size = UDim2.new(1, 0, 0, 48),
-            Text = gold_label,
-            TextColor3 = GOLD_TEXT,
-            TextSize = 18,
-            [Roact.Event.Activated] = function()
-                if not props.rolling then
-                    props.on_gold_roll()
-                end
-            end,
+            Position = UDim2.fromOffset(0, 230),
+            Size = UDim2.new(1, 0, 0, 118),
         }, {
-            Corner = Roact.createElement("UICorner", {
-                CornerRadius = UDim.new(0, 8),
+            Padding = Roact.createElement("UIPadding", {
+                PaddingLeft = UDim.new(0, 10),
+                PaddingRight = UDim.new(0, 10),
+                PaddingTop = UDim.new(0, 10),
             }),
-            Stroke = Roact.createElement("UIStroke", {
-                Color = Color3.fromRGB(230, 210, 160),
-                Thickness = 1,
-            }),
+            Bars = Roact.createElement(pity_bars, { pity = props.pity }),
         }),
         Result = Roact.createElement("TextLabel", {
             BackgroundTransparency = 1,
-            Font = Enum.Font.GothamBold,
-            LayoutOrder = 6,
-            Size = UDim2.new(1, 0, 0, 48),
-            Text = result_text,
-            TextColor3 = Color3.fromRGB(70, 70, 70),
-            TextSize = 15,
+            Font = Enum.Font.RobotoCondensed,
+            Position = UDim2.fromOffset(0, 360),
+            Size = UDim2.new(1, 0, 0, 70),
+            Text = if props.last_roll then props.last_roll.message else "",
+            TextColor3 = Color3.fromRGB(90, 87, 79),
+            TextSize = 14,
             TextWrapped = true,
             TextXAlignment = Enum.TextXAlignment.Left,
             TextYAlignment = Enum.TextYAlignment.Top,

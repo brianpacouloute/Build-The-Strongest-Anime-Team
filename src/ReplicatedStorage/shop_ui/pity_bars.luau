@@ -8,7 +8,8 @@ local function pity_row(props)
     local rarity = props.rarity
     local current = props.current or 0
     local max = catalog.pity[rarity] or 1
-    local color = catalog.rarities[rarity] and catalog.rarities[rarity].color or Color3.fromRGB(120, 120, 120)
+    local colors = { Rare = Color3.fromRGB(52, 160, 246), Epic = Color3.fromRGB(179, 55, 240), Mythic = Color3.fromRGB(245, 69, 130) }
+    local color = colors[rarity]
     local fill = math.clamp(current / max, 0, 1)
 
     return Roact.createElement("Frame", {
@@ -18,20 +19,20 @@ local function pity_row(props)
     }, {
         Label = Roact.createElement("TextLabel", {
             BackgroundTransparency = 1,
-            Font = Enum.Font.Gotham,
+            Font = Enum.Font.RobotoCondensed,
             Size = UDim2.new(0.7, 0, 0, 16),
             Text = "Guaranteed " .. rarity,
-            TextColor3 = Color3.fromRGB(40, 40, 40),
-            TextSize = 14,
+            TextColor3 = Color3.fromRGB(130, 130, 130),
+            TextSize = 13,
             TextXAlignment = Enum.TextXAlignment.Left,
         }),
         Count = Roact.createElement("TextLabel", {
             BackgroundTransparency = 1,
-            Font = Enum.Font.Gotham,
+            FontFace = Font.new(Font.fromEnum(Enum.Font.RobotoCondensed).Family, Enum.FontWeight.Bold),
             Position = UDim2.new(0.7, 0, 0, 0),
             Size = UDim2.new(0.3, 0, 0, 16),
             Text = tostring(current) .. "/" .. tostring(max),
-            TextColor3 = Color3.fromRGB(40, 40, 40),
+            TextColor3 = Color3.fromRGB(130, 130, 130),
             TextSize = 14,
             TextXAlignment = Enum.TextXAlignment.Right,
         }),
@@ -41,17 +42,14 @@ local function pity_row(props)
             Position = UDim2.fromOffset(0, 20),
             Size = UDim2.new(1, 0, 0, 4),
         }, {
-            Corner = Roact.createElement("UICorner", {
-                CornerRadius = UDim.new(1, 0),
+            Stroke = Roact.createElement("UIStroke", {
+                Color = Color3.fromRGB(252, 248, 235),
+                Thickness = 1,
             }),
             Fill = Roact.createElement("Frame", {
                 BackgroundColor3 = color,
                 BorderSizePixel = 0,
                 Size = UDim2.new(fill, 0, 1, 0),
-            }, {
-                Corner = Roact.createElement("UICorner", {
-                    CornerRadius = UDim.new(1, 0),
-                }),
             }),
         }),
     })
