@@ -1,5 +1,6 @@
 local rs = game:GetService("ReplicatedStorage")
 local Roact = require(rs.Packages.roact)
+local animated_button = require(script.Parent.animated_button)
 local helpers = require(rs.helpers)
 local pity_bars = require(script.Parent.pity_bars)
 
@@ -7,7 +8,7 @@ local MINT = Color3.fromRGB(135, 232, 187)
 local PANEL = Color3.fromRGB(233, 229, 218)
 
 local function mint_button(props)
-    return Roact.createElement("TextButton", {
+    return Roact.createElement(animated_button, {
         AutoButtonColor = true,
         BackgroundColor3 = MINT,
         BackgroundTransparency = 0.3,
@@ -121,8 +122,8 @@ local function roll_panel(props)
                 badge = "10x",
                 on_click = props.on_ten_roll,
             }),
-            Gold = Roact.createElement("TextButton", {
-                AutoButtonColor = not props.rolling,
+            Gold = Roact.createElement(animated_button, {
+                Disabled = props.rolling,
                 BackgroundColor3 = Color3.fromRGB(252, 249, 238),
                 BackgroundTransparency = 0.45,
                 BorderSizePixel = 0,

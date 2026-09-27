@@ -1,5 +1,6 @@
 local rs = game:GetService("ReplicatedStorage")
 local Roact = require(rs.Packages.roact)
+local animated_button = require(script.Parent.animated_button)
 local assets = require(script.Parent.assets)
 local ability_card = require(script.Parent.ability_card)
 local corner_frame = require(script.Parent.corner_frame)
@@ -74,7 +75,7 @@ local function ability_detail(props)
                 TextSize = 15,
                 TextXAlignment = Enum.TextXAlignment.Left,
             }) or nil,
-            Action = owned and Roact.createElement("TextButton", {
+            Action = owned and Roact.createElement(animated_button, {
                 AutoButtonColor = true,
                 BackgroundColor3 = Color3.fromRGB(245, 241, 230),
                 BorderSizePixel = 0,
@@ -94,7 +95,7 @@ local function ability_detail(props)
                     Thickness = 2,
                 }),
             }) or nil,
-            Close = Roact.createElement("TextButton", {
+            Close = Roact.createElement(animated_button, {
                 BackgroundTransparency = 1,
                 AnchorPoint = Vector2.new(1, 0),
                 Position = UDim2.new(1, -16, 0, 16),

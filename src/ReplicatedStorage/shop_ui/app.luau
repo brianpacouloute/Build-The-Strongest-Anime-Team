@@ -3,6 +3,8 @@ local plrs = game:GetService("Players")
 local rs = game:GetService("ReplicatedStorage")
 
 local Roact = require(rs.Packages.roact)
+local animated_button = require(script.Parent.animated_button)
+local animated_panel = require(script.Parent.animated_panel)
 local corner_frame = require(script.Parent.corner_frame)
 local dashed_frame = require(script.Parent.dashed_frame)
 local catalog = require(rs.ability_catalog)
@@ -30,7 +32,7 @@ end
 
 local function tab_button(props)
     local selected = props.selected
-    return Roact.createElement("TextButton", {
+    return Roact.createElement(animated_button, {
         AutoButtonColor = false,
         BackgroundTransparency = 1,
         FontFace = Font.new(Font.fromEnum(Enum.Font.RobotoCondensed).Family, Enum.FontWeight.Bold),
@@ -75,6 +77,9 @@ local App = Roact.Component:extend("ShopApp")
 function App:init()
     self:setState({
         open = false,
+        shop_closing = false,
+        detail_closing = false,
+        pending_tab = nil,
         ui_scale = 1,
         tab = "abilities",
         gold = 0,
@@ -133,6 +138,7 @@ function App:didMount()
             gold = data.gold,
             rolling = false,
             selected_id = selected_id,
+            detail_closing = false,
         })
     end)
 
@@ -237,6 +243,7 @@ function App:gold_roll()
             owned = owned,
             rolling = false,
             selected_id = selected_id,
+            detail_closing = false,
         })
     else
         self:setState({
@@ -268,6 +275,22 @@ function App:set_equipped(id, equipped)
         id = id,
         equipped = equipped,
     })
+end
+
+function App:switch_tab(tab)
+    if tab == self.state.tab and not self.state.pending_tab then
+        return
+    end
+    if tab ~= "abilities" and self.state.tab == "abilities" and self.state.selected_id then
+        self:setState({ detail_closing = true, pending_tab = tab })
+    else
+        self:setState({
+            tab = tab,
+            selected_id = Roact.None,
+            detail_closing = false,
+            pending_tab = nil,
+        })
+    end
 end
 
 function App:last_id()
@@ -315,12 +338,30 @@ function App:render()
                     equipped = self.state.equipped,
                     last_id = self:last_id(),
                     on_select = function(id)
-                        self:setState({ selected_id = if self.state.selected_id == id then Roact.None else id })
+                        if self.state.selected_id == id and not self.state.detail_closing then
+                            self:setState({ detail_closing = true })
+                        else
+                            self:setState({ selected_id = id, detail_closing = false, pending_tab = nil })
+                        end
                     end,
                     owned = self.state.owned,
                 }),
             }),
-            Detail = selected and Roact.createElement("Frame", {
+            Detail = selected and Roact.createElement(animated_panel, {
+                RevealKey = selected.id,
+                Offset = 10,
+                Duration = 0.3,
+                CloseDuration = 0.3,
+                Closing = self.state.detail_closing,
+                OnClosed = function()
+                    local next_tab = self.state.pending_tab
+                    self:setState({
+                        selected_id = Roact.None,
+                        detail_closing = false,
+                        pending_tab = nil,
+                        tab = next_tab or self.state.tab,
+                    })
+                end,
                 AnchorPoint = Vector2.new(0, 1),
                 BackgroundTransparency = 1,
                 Position = UDim2.fromScale(0, 1),
@@ -334,7 +375,7 @@ function App:render()
                         self:set_equipped(id, equipped)
                     end,
                     on_close = function()
-                        self:setState({ selected_id = Roact.None })
+                        self:setState({ detail_closing = true })
                     end,
                 }),
             }) or nil,
@@ -348,7 +389,7 @@ function App:render()
     end
 
     return Roact.createElement("Folder", {}, {
-        OpenButton = Roact.createElement("TextButton", {
+        OpenButton = Roact.createElement(animated_button, {
             AnchorPoint = Vector2.new(0, 1),
             BackgroundColor3 = Color3.fromRGB(26, 25, 22),
             BorderSizePixel = 0,
@@ -379,7 +420,16 @@ function App:render()
                 ZIndex = 3,
             }),
         }),
-        Window = Roact.createElement("Frame", {
+        Window = Roact.createElement(animated_panel, {
+            ViewportScale = self.state.ui_scale,
+            StartScale = 0.975,
+            Offset = 8,
+            Duration = 0.36,
+            CloseDuration = 0.36,
+            Closing = self.state.shop_closing,
+            OnClosed = function()
+                self:setState({ open = false, shop_closing = false })
+            end,
             AnchorPoint = Vector2.new(0.5, 0.5),
             BackgroundColor3 = Color3.fromRGB(248, 244, 236),
             BorderSizePixel = 0,
@@ -388,9 +438,6 @@ function App:render()
             Size = UDim2.fromOffset(940, 540),
             Visible = self.state.open,
         }, {
-            Scale = Roact.createElement("UIScale", {
-                Scale = self.state.ui_scale,
-            }),
             Cream = Roact.createElement("ImageLabel", {
                 BackgroundTransparency = 1,
                 Image = assets.image("01-cream-dots-tile"),
@@ -430,7 +477,7 @@ function App:render()
                     Abilities = Roact.createElement(tab_button, {
                         LayoutOrder = 1,
                         on_click = function()
-                            self:setState({ tab = "abilities" })
+                            self:switch_tab("abilities")
                         end,
                         selected = tab == "abilities",
                         text = "Abilities",
@@ -438,7 +485,7 @@ function App:render()
                     Store = Roact.createElement(tab_button, {
                         LayoutOrder = 2,
                         on_click = function()
-                            self:setState({ tab = "store" })
+                            self:switch_tab("store")
                         end,
                         selected = tab == "store",
                         text = "Store",
@@ -472,7 +519,7 @@ function App:render()
                         TextXAlignment = Enum.TextXAlignment.Left,
                     }),
                 }),
-                Close = Roact.createElement("TextButton", {
+                Close = Roact.createElement(animated_button, {
                     AnchorPoint = Vector2.new(1, 0.5),
                     AutoButtonColor = true,
                     BackgroundColor3 = Color3.fromRGB(251, 247, 233),
@@ -482,7 +529,7 @@ function App:render()
                     Text = "",
                     ZIndex = 5,
                     [Roact.Event.Activated] = function()
-                        self:setState({ open = false })
+                        self:setState({ shop_closing = true })
                     end,
                 }, {
                     Texture = Roact.createElement("ImageLabel", {
