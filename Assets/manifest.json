@@ -1,0 +1,144 @@
+{
+  "visual_order": "rarity background → corner brackets → item artwork, then labels and ownership badge below",
+  "notes": [
+    "The checkerboard in previews is transparency only and is not part of the assets.",
+    "UI code should look up by id, then load rbxassetid://asset_id."
+  ],
+  "assets": [
+    {
+      "id": "01-cream-dots-tile",
+      "file": "01-cream-dots-tile.png",
+      "asset_id": 1262953227673855,
+      "width": 128,
+      "height": 128,
+      "tile": true,
+      "use": "Large cream background behind the item grid and right-hand shop panels. Repeat across the area so the dots stay small and evenly spaced."
+    },
+    {
+      "id": "02-dark-dots-tile",
+      "file": "02-dark-dots-tile.png",
+      "asset_id": 92938881861224,
+      "width": 128,
+      "height": 128,
+      "tile": true,
+      "use": "Black header behind Daily Shop / Your Items / Passes, currency, and the gift/close buttons. Repeat this texture."
+    },
+    {
+      "id": "03-card-common-beige",
+      "file": "03-card-common-beige.png",
+      "asset_id": 82224682307799,
+      "width": 512,
+      "height": 512,
+      "rarity": "Common",
+      "use": "Common item-card background, behind the item artwork in the square upper section of each card. Name, rarity, and ownership sit underneath as UI."
+    },
+    {
+      "id": "03-card-uncommon-mint",
+      "file": "03-card-uncommon-mint.png",
+      "asset_id": 124414200791968,
+      "width": 512,
+      "height": 512,
+      "rarity": "Uncommon",
+      "use": "Uncommon item-card background, behind the item artwork in the square upper section of each card. Name, rarity, and ownership sit underneath as UI."
+    },
+    {
+      "id": "03-card-rare-blue",
+      "file": "03-card-rare-blue.png",
+      "asset_id": 9300867613551,
+      "width": 512,
+      "height": 512,
+      "rarity": "Rare",
+      "use": "Rare item-card background, behind the item artwork in the square upper section of each card. Name, rarity, and ownership sit underneath as UI."
+    },
+    {
+      "id": "03-card-epic-purple",
+      "file": "03-card-epic-purple.png",
+      "asset_id": 899440128025822,
+      "width": 512,
+      "height": 512,
+      "rarity": "Epic",
+      "use": "Epic item-card background, behind the item artwork in the square upper section of each card. Name, rarity, and ownership sit underneath as UI."
+    },
+    {
+      "id": "03-card-mythic-red",
+      "file": "03-card-mythic-red.png",
+      "asset_id": 11897776202199,
+      "width": 512,
+      "height": 512,
+      "rarity": "Mythic",
+      "use": "Mythic item-card background, behind the item artwork in the square upper section of each card. Name, rarity, and ownership sit underneath as UI."
+    },
+    {
+      "id": "04-tab-dashed-tan",
+      "file": "04-tab-dashed-tan.png",
+      "asset_id": 1333150862348688,
+      "width": 560,
+      "height": 184,
+      "use": "Transparent dashed outline for inactive tabs (Daily Shop in the reference). Supply the button background and text beneath it. Keep the wide proportions so the dashes do not stretch."
+    },
+    {
+      "id": "04-tab-dashed-cream",
+      "file": "04-tab-dashed-cream.png",
+      "asset_id": 128815226137991,
+      "width": 560,
+      "height": 184,
+      "use": "Transparent dashed outline for the selected tab (Your Items in the reference). Supply the button background and text beneath it. Keep the wide proportions so the dashes do not stretch."
+    },
+    {
+      "id": "05-corners-soft-tan",
+      "file": "05-corners-soft-tan.png",
+      "asset_id": 1317771448190545,
+      "width": 512,
+      "height": 512,
+      "use": "Subtle corner brackets around item artwork. Overlay as a decorative frame. For rectangles, position the four corners separately so they do not stretch."
+    },
+    {
+      "id": "05-corners-tan",
+      "file": "05-corners-tan.png",
+      "asset_id": 12995645045375,
+      "width": 512,
+      "height": 512,
+      "use": "Stronger corner brackets around buttons such as gift and close. Overlay as a decorative frame. For rectangles, position the four corners separately so they do not stretch."
+    },
+    {
+      "id": "05-corners-white",
+      "file": "05-corners-white.png",
+      "asset_id": 1246555872264671,
+      "width": 512,
+      "height": 512,
+      "use": "Optional brighter corner brackets for dark backgrounds. Overlay as a decorative frame. For rectangles, position the four corners separately so they do not stretch."
+    },
+    {
+      "id": "10-close-dark",
+      "file": "10-close-dark.png",
+      "asset_id": 92425879508566,
+      "width": 256,
+      "height": 256,
+      "use": "The X in the cream close button, top right."
+    },
+    {
+      "id": "10-cross-white",
+      "file": "10-cross-white.png",
+      "asset_id": 913636940207199,
+      "width": 256,
+      "height": 256,
+      "use": "Small cross beside Not owned, placed over a dark square."
+    },
+    {
+      "id": "10-check-mint",
+      "file": "10-check-mint.png",
+      "asset_id": 1001097694255855,
+      "width": 256,
+      "height": 256,
+      "use": "Check beside Owned, placed over a dark square."
+    },
+    {
+      "id": "10-check-white",
+      "file": "10-check-white.png",
+      "asset_id": 71391709373411,
+      "width": 256,
+      "height": 256,
+      "use": "Alternative check for other selected or confirmed states."
+    }
+  ]
+}
